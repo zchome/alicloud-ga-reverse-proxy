@@ -11,7 +11,7 @@ resource "alicloud_security_group" "default_group" {
 }
 
 # Security Group Rule
-resource "alicloud_security_group_rule" "allow_vpn_udp" {
+resource "alicloud_security_group_rule" "allow_vpn_udp_1" {
   security_group_id = alicloud_security_group.default_group.id
   nic_type          = "intranet"
   type              = "ingress"
@@ -22,7 +22,7 @@ resource "alicloud_security_group_rule" "allow_vpn_udp" {
   cidr_ip           = "0.0.0.0/0"
 }
 
-resource "alicloud_security_group_rule" "allow_vpn_udp" {
+resource "alicloud_security_group_rule" "allow_vpn_udp_2" {
   security_group_id = alicloud_security_group.default_group.id
   nic_type          = "intranet"
   type              = "ingress"
