@@ -11,3 +11,11 @@ The Alibaba Cloud Terraform modules for PoC.
 ## Installation
 + Install terraform cli.
 + Init project and refer modules.
+
+## Usage(Terragrunt)
++ Export `ALICLOUD_ACCESS_KEY` `ALICLOUD_SECRET_KEY` `ALICLOUD_REGION` variables to env.
++ Include required modules as your requirement.
++ Execute `terragrunt run-all init` & `terragrunt run-all apply` to apply resources on the parent directory in given region.
+
+## Remarks
+* When you use ga (Global Accelorator) module, please set `ALICLOUD_REGION` to `cn-hangzhou`

@@ -32,6 +32,28 @@ resource "alicloud_security_group_rule" "allow_https_tcp" {
   cidr_ip           = "0.0.0.0/0"
 }
 
+resource "alicloud_security_group_rule" "allow_http_tcp" {
+  security_group_id = alicloud_security_group.default_group.id
+  nic_type          = "intranet"
+  type              = "ingress"
+  policy            = "accept"
+  port_range        = "80/80"
+  ip_protocol       = "tcp"
+  priority          = "50"
+  cidr_ip           = "0.0.0.0/0"
+}
+
+resource "alicloud_security_group_rule" "allow_ssh" {
+  security_group_id = alicloud_security_group.default_group.id
+  nic_type          = "intranet"
+  type              = "ingress"
+  policy            = "accept"
+  port_range        = "22/22"
+  ip_protocol       = "tcp"
+  priority          = "50"
+  cidr_ip           = "0.0.0.0/0"
+}
+
 # ECS Instances
 resource "alicloud_instance" "instance" {
 
@@ -53,5 +75,6 @@ resource "alicloud_instance" "instance" {
   user_data = <<-EOF
 #!/bin/sh
 yum install nginx -y
+systemctl restart nginx
   EOF
 }
