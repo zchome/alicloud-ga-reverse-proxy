@@ -16,11 +16,11 @@ variable "vswitch_server_cidr" {
   description = "The vswitch cidr."
 }
 
-variable "vswitch_db_cidr" {
-  type        = string
-  default     = "172.16.1.0/24"
-  description = "The vswitch cidr."
-}
+# variable "vswitch_db_cidr" {
+#   type        = string
+#   default     = "172.16.1.0/24"
+#   description = "The vswitch cidr."
+# }
 
 variable "resource_group_id" {
   type        = string

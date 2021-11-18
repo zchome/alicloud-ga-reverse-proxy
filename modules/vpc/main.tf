@@ -20,13 +20,13 @@ resource "alicloud_vswitch" "vswitch_server" {
   }
 }
 
-resource "alicloud_vswitch" "vswitch_db" {
-  vswitch_name = "vswitch-db-${var.name}"
-  vpc_id       = alicloud_vpc.vpc.id
-  cidr_block   = var.vswitch_db_cidr
-  zone_id      = var.availability_zone
+# resource "alicloud_vswitch" "vswitch_db" {
+#   vswitch_name = "vswitch-db-${var.name}"
+#   vpc_id       = alicloud_vpc.vpc.id
+#   cidr_block   = var.vswitch_db_cidr
+#   zone_id      = var.availability_zone
 
-  tags = {
-    poc = var.name
-  }
-}
+#   tags = {
+#     poc = var.name
+#   }
+# }

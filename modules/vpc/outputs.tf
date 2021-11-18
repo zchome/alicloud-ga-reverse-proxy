@@ -8,7 +8,7 @@ output "vswitch_server_id" {
   description = "The generated vswitch server id."
 }
 
-output "vswitch_db_id" {
-  value       = alicloud_vswitch.vswitch_db.id
-  description = "The generated vswitch db id."
-}
+# output "vswitch_db_id" {
+#   value       = alicloud_vswitch.vswitch_db.id
+#   description = "The generated vswitch db id."
+# }
