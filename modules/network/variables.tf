@@ -13,13 +13,19 @@ variable "vpc_cidr" {
 variable "vswitch_server_cidr" {
   type        = string
   default     = "172.16.0.0/24"
-  description = "The vswitch cidr."
+  description = "The servers vswitch cidr."
+}
+
+variable "vswitch_server_2_cidr" {
+  type        = string
+  default     = "172.16.1.0/24"
+  description = "The 2nd servers vswitch cidr."
 }
 
 # variable "vswitch_db_cidr" {
 #   type        = string
-#   default     = "172.16.1.0/24"
-#   description = "The vswitch cidr."
+#   default     = "172.16.2.0/24"
+#   description = "The db vswitch cidr."
 # }
 
 variable "resource_group_id" {
@@ -29,5 +35,10 @@ variable "resource_group_id" {
 
 variable "availability_zone" {
   type        = string
-  description = "The zone of vpc."
+  description = "The availability zone of vswitch."
+}
+
+variable "availability_zone_2" {
+  type        = string
+  description = "The availability zone of 2nd vswtich."
 }

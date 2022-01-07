@@ -16,15 +16,10 @@ variable "bandwidth" {
   description = "The bandwidth(Mbps) of global accelerator."
 }
 
-variable "endpoint_group_region" {
+variable "ga_http_protocol" {
   type        = string
-  default     = "cn-hongkong"
-  description = "The endpoint region of global accelerator."
-}
-
-variable "endpoint_ip_address" {
-  type        = string
-  description = "The endpoint id address of global accelerator."
+  default     = "TCP"
+  description = "The HTTP listener protocol."
 }
 
 variable "accelerate_region_id" {
@@ -32,3 +27,20 @@ variable "accelerate_region_id" {
   default     = "cn-hongkong"
   description = "The accelerate region of global accelerator."
 }
+
+variable "endpoint_group_region" {
+  type        = string
+  description = "The endpoint region of global accelerator."
+}
+
+variable "endpoint_type" {
+  type        = string
+  default     = "PublicIp"
+  description = "The endpoint id address of global accelerator."
+}
+
+variable "endpoint_ip_address" {
+  type        = string
+  description = "The endpoint id address of global accelerator."
+}
+

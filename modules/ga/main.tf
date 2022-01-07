@@ -11,7 +11,7 @@ resource "alicloud_ga_bandwidth_package" "default" {
   bandwidth                 = "${var.bandwidth}"
   type                      = "Basic"                 # "Basic" "CrossDomain"
   bandwidth_type            = "${var.bandwidth_type}" # "Basic" "Advanced" "Enhanced"
-  duration                  = 1
+  duration                  = 1                       # 1 month
   ratio                     = 30
   # payment_type              = "PayAsYouGo"            # "PayAsYouGo" "Subscription"
   # billing_type              = "PayBy95"               # "PayBy95" "PayByTraffic" # Not support
@@ -19,20 +19,21 @@ resource "alicloud_ga_bandwidth_package" "default" {
   auto_use_coupon           = true
 }
 
-# # Bandwidth Cross Border
-# resource "alicloud_ga_bandwidth_package" "china" {
-#   bandwidth                 = 5
-#   type                      = "CrossDomain"           # "Basic" "CrossDomain"
-#   # bandwidth_type            = "${var.bandwidth_type}" # "Basic" "Advanced" "Enhanced"
-#   duration                  = 1
-#   ratio                     = 30
-#   cbn_geographic_region_ida = "China-mainland"
-#   cbn_geographic_region_idb = "Global"
-#   payment_type              = "PayAsYouGo"          # "PayAsYouGo" "Subscription"
-#   billing_type              = "PayByTraffic"        # "PayBy95" "PayByTraffic"
-#   auto_pay                  = true
-#   auto_use_coupon           = true
-# }
+# Bandwidth Cross Border
+resource "alicloud_ga_bandwidth_package" "china" {
+  count                     = "${var.accelerate_region_id != "cn-hongkong" ? 1 : 0}"
+  bandwidth                 = "${var.bandwidth}"
+  type                      = "CrossDomain"         # "Basic" "CrossDomain"
+  # bandwidth_type            = "${var.bandwidth_type}" # "Basic" "Advanced" "Enhanced"
+  duration                  = 1                     # 1 month
+  ratio                     = 30
+  cbn_geographic_region_ida = "China-mainland"
+  cbn_geographic_region_idb = "Global"
+  payment_type              = "PayAsYouGo"          # "PayAsYouGo" "Subscription"
+  billing_type              = "PayByTraffic"        # "PayBy95" "PayByTraffic"
+  auto_pay                  = true
+  auto_use_coupon           = true
+}
 
 # Attachment
 resource "alicloud_ga_bandwidth_package_attachment" "default" {
@@ -41,7 +42,7 @@ resource "alicloud_ga_bandwidth_package_attachment" "default" {
 }
 
 # GA Listener
-resource "alicloud_ga_listener" "http" {
+resource "alicloud_ga_listener" "https" {
   depends_on     = [alicloud_ga_bandwidth_package_attachment.default]
   accelerator_id = alicloud_ga_accelerator.default.id
   protocol       = "TCP"
@@ -52,10 +53,10 @@ resource "alicloud_ga_listener" "http" {
   }
 }
 
-resource "alicloud_ga_listener" "https" {
+resource "alicloud_ga_listener" "http" {
   depends_on     = [alicloud_ga_bandwidth_package_attachment.default]
   accelerator_id = alicloud_ga_accelerator.default.id
-  protocol       = "TCP"
+  protocol       = "${var.ga_http_protocol != "HTTP" ? "TCP" : "HTTP"}"
   name           = "HTTP"
   port_ranges {
     from_port = 80
@@ -69,15 +70,15 @@ resource "alicloud_ga_listener" "https" {
 #   internet_charge_type = "PayByBandwidth"
 # }
 
-# Endpoint
+# Endpoints
 resource "alicloud_ga_endpoint_group" "http" {
   endpoint_group_region = "${var.endpoint_group_region}"
   accelerator_id        = alicloud_ga_accelerator.default.id
   listener_id           = alicloud_ga_listener.http.id
-  name                  = "${var.name}-ep-http"
+  name                  = "${var.name}-end-http"
   endpoint_configurations {
     endpoint            = "${var.endpoint_ip_address}"
-    type                = "PublicIp"                          # "Ip" "PublicIp" "ECS" "SLB" 
+    type                = "${var.endpoint_type}"              # "Ip" "PublicIp" "ECS" "SLB" 
     weight              = "100"
   }
 }
@@ -86,10 +87,10 @@ resource "alicloud_ga_endpoint_group" "https" {
   endpoint_group_region = "${var.endpoint_group_region}"
   accelerator_id        = alicloud_ga_accelerator.default.id
   listener_id           = alicloud_ga_listener.https.id
-  name                  = "${var.name}-ep-https"
+  name                  = "${var.name}-end-https"
   endpoint_configurations {
-    endpoint            = "${var.endpoint_ip_address}"
-    type                = "PublicIp"                          # "Ip" "PublicIp" "ECS" "SLB" 
+    endpoint            = "${var.endpoint_ip_address}" 
+    type                = "${var.endpoint_type}"              # "Ip" "PublicIp" "ECS" "SLB" 
     weight              = "100"
   }
 }

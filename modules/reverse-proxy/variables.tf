@@ -19,9 +19,19 @@ variable "vswitch_id" {
   description = "The vswitch id of reverse proxy."
 }
 
+variable "vswitch_id_2" {
+  type        = string
+  description = "The vswitch id of 2nd reverse proxy."
+}
+
 variable "availability_zone" {
   type        = string
   description = "The az of reverse proxy server."
+}
+
+variable "availability_zone_2" {
+  type        = string
+  description = "The az of 2nd reverse proxy server."
 }
 
 variable "instance_type" {
@@ -36,8 +46,25 @@ variable "image_id" {
   description = "The image of reverse proxy server."
 }
 
+variable "bandwidth" {
+  type        = string
+  default     = "5"
+  description = "The bandwidth(Mbps) of global accelerator."
+}
+
 variable "key_name" {
   type        = string
   description = "The root account key name."
 }
 
+variable "key_exist" {
+  type        = bool
+  default     = true
+  description = "The root account key name."
+}
+
+variable "enable_slb" {
+  type        = bool
+  default     = true
+  description = "The root account key name."
+}

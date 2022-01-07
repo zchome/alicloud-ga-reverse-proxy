@@ -1,0 +1,8 @@
+name                  : "ga"
+vpc_cidr              : "172.16.0.0/16"
+vswitch_server_cidr   : "172.16.0.0/24"
+vswitch_server_2_cidr : "172.16.1.0/24"
+region_id             : "eu-central-1"
+key_name              : "ssh-key"
+accelerate_region_id  : "cn-hongkong"
+endpoint_group_region : "eu-central-1"
