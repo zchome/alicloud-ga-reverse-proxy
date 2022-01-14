@@ -64,7 +64,7 @@ resource "alicloud_instance" "instance" {
   image_id                    = var.image_id
   instance_name               = "ecs-${var.name}"
   vswitch_id                  = var.vswitch_id
-  internet_max_bandwidth_out  = "${var.enable_slb ? 0 : var.bandwidth}"
+  internet_max_bandwidth_out  = "0"
   key_name                    = var.key_name
 
   resource_group_id           = var.resource_group_id
@@ -80,7 +80,6 @@ systemctl restart nginx
 }
 
 resource "alicloud_instance" "instance_2" {
-  count                       = "${var.enable_slb ? 1 : 0}"
   availability_zone           = var.availability_zone_2
   security_groups             = alicloud_security_group.default_group.*.id
   instance_type               = var.instance_type
@@ -88,7 +87,7 @@ resource "alicloud_instance" "instance_2" {
   image_id                    = var.image_id
   instance_name               = "ecs-${var.name}"
   vswitch_id                  = var.vswitch_id_2
-  internet_max_bandwidth_out  = "${var.enable_slb ? 0 : var.bandwidth}"
+  internet_max_bandwidth_out  = "0"
   key_name                    = var.key_name
 
   resource_group_id           = var.resource_group_id
@@ -105,11 +104,10 @@ systemctl restart nginx
 
 # SLB
 resource "alicloud_slb_load_balancer" "default" {
-  count                   = "${var.enable_slb ? 1 : 0}"
   load_balancer_name      = "slb-${var.name}"
   load_balancer_spec      = "slb.s2.small"          # "slb.s1.small", "slb.s2.small", "slb.s2.medium", "slb.s3.small", "slb.s3.medium", "slb.s3.large" and "slb.s4.large"
   vswitch_id              = var.vswitch_id
-  address_type            = "intranet"              # "intranet" "internet"
+  address_type            = "internet"              # "intranet" "internet"
   # bandwidth               = "${var.bandwidth}"      # required with "PayByBandwidth"
   internet_charge_type    = "PayByTraffic"          # "PayByBandwidth" "PayByTraffic"
   master_zone_id          = var.availability_zone
@@ -123,7 +121,6 @@ resource "alicloud_slb_load_balancer" "default" {
 
 # SLB backend server
 resource "alicloud_slb_backend_server" "default" {
-  count                   = "${var.enable_slb ? 1 : 0}"
   load_balancer_id        = alicloud_slb_load_balancer.default.id
   backend_servers {
     server_id             = alicloud_instance.instance.id
@@ -137,7 +134,6 @@ resource "alicloud_slb_backend_server" "default" {
 
 # SLB listener
 resource "alicloud_slb_listener" "http" {
-  count                   = "${var.enable_slb ? 1 : 0}"
   load_balancer_id        = alicloud_slb_load_balancer.default.id
   frontend_port           = 80
   backend_port            = 80
@@ -145,10 +141,10 @@ resource "alicloud_slb_listener" "http" {
   bandwidth               = "${var.bandwidth}"
   sticky_session          = "on"
   sticky_session_type     = "insert"
+  cookie_timeout          = 86400
 }
 
 resource "alicloud_slb_listener" "https" {
-  count                   = "${var.enable_slb ? 1 : 0}"
   load_balancer_id        = alicloud_slb_load_balancer.default.id
   frontend_port           = 443
   backend_port            = 443

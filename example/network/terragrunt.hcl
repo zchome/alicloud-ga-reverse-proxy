@@ -24,7 +24,7 @@ dependency "resource-group" {
 
 inputs = {
     name                    = local.common_vars.name
-    availability_zone       = dependency.alicloud-data.outputs.alicloud_avalable_zone_id.
+    availability_zone       = dependency.alicloud-data.outputs.alicloud_avalable_zone_id
     availability_zone_2     = dependency.alicloud-data.outputs.alicloud_avalable_zone_2_id
     resource_group_id       = dependency.resource-group.outputs.rg_id
     vpc_cidr                = local.common_vars.vpc_cidr

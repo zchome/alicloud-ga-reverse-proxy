@@ -62,9 +62,3 @@ variable "key_exist" {
   default     = true
   description = "The root account key name."
 }
-
-variable "enable_slb" {
-  type        = bool
-  default     = true
-  description = "The root account key name."
-}
