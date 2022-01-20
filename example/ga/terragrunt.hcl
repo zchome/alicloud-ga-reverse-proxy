@@ -20,6 +20,7 @@ dependency "reverse-proxy" {
 
 inputs = {
     name                    = local.common_vars.name
+    endpoint_type           = "SLB"
     endpoint_ip_address     = dependency.reverse-proxy.outputs.slb_public_ip
     accelerate_region_id    = local.common_vars.accelerate_region_id
     endpoint_group_region   = local.common_vars.endpoint_group_region

@@ -107,9 +107,9 @@ resource "alicloud_slb_load_balancer" "default" {
   load_balancer_name      = "slb-${var.name}"
   load_balancer_spec      = "slb.s2.small"          # "slb.s1.small", "slb.s2.small", "slb.s2.medium", "slb.s3.small", "slb.s3.medium", "slb.s3.large" and "slb.s4.large"
   vswitch_id              = var.vswitch_id
-  address_type            = "internet"              # "intranet" "internet"
+  address_type            = "intranet"              # "intranet" "internet"
   # bandwidth               = "${var.bandwidth}"      # required with "PayByBandwidth"
-  internet_charge_type    = "PayByTraffic"          # "PayByBandwidth" "PayByTraffic"
+  # internet_charge_type    = "PayByTraffic"          # "PayByBandwidth" "PayByTraffic"
   master_zone_id          = var.availability_zone
   slave_zone_id           = var.availability_zone_2
 
@@ -152,4 +152,66 @@ resource "alicloud_slb_listener" "https" {
   bandwidth               = "${var.bandwidth}"
   sticky_session          = "on"
   sticky_session_type     = "insert"
+}
+
+# EIP to ECS
+resource "alicloud_eip_address" "ecs" {
+  address_name          = "eip-ecs-${var.name}"
+  isp                   = "BGP"
+  bandwidth             = "5"                # 1-200
+  internet_charge_type  = "PayByTraffic"     # "PayByTraffic",  "PayByBandwidth"
+  payment_type          = "PayAsYouGo"       # "PayAsYouGo", "Subscription"
+  # period                = "1"                # month valid by subscription
+
+  resource_group_id     = var.resource_group_id
+  tags                    = {
+    poc = var.name
+  }
+}
+
+resource "alicloud_eip_address" "ecs_2" {
+  address_name          = "eip-ecs-${var.name}-2"
+  isp                   = "BGP"
+  bandwidth             = "5"                # 1-200
+  internet_charge_type  = "PayByTraffic"     # "PayByTraffic",  "PayByBandwidth"
+  payment_type          = "PayAsYouGo"       # "PayAsYouGo", "Subscription"
+  # period                = "1"                # month valid by subscription
+
+  resource_group_id     = var.resource_group_id
+  tags                    = {
+    poc = var.name
+  }
+}
+
+resource "alicloud_eip_association" "eip_asso" {
+  allocation_id = alicloud_eip_address.ecs.id
+  instance_id   = alicloud_instance.instance.id
+  instance_type = "EcsInstance"                   # "EcsInstance", "SlbInstance", "Nat", "NetworkInterface", "HaVip"
+}
+
+resource "alicloud_eip_association" "eip_asso_2" {
+  allocation_id = alicloud_eip_address.ecs_2.id
+  instance_id   = alicloud_instance.instance_2.id
+  instance_type = "EcsInstance"                   # "EcsInstance", "SlbInstance", "Nat", "NetworkInterface", "HaVip"
+}
+
+# EIP to SLB
+resource "alicloud_eip_address" "slb" {
+  address_name          = "eip-slb-${var.name}"
+  isp                   = "BGP"
+  bandwidth             = "10"                # 1-200
+  internet_charge_type  = "PayByTraffic"     # "PayByTraffic",  "PayByBandwidth"
+  payment_type          = "PayAsYouGo"       # "PayAsYouGo", "Subscription"
+  # period                = "1"                # month valid by subscription
+
+  resource_group_id     = var.resource_group_id
+  tags                    = {
+    poc = var.name
+  }
+}
+
+resource "alicloud_eip_association" "eip_asso_slb" {
+  allocation_id = alicloud_eip_address.slb.id
+  instance_id   = alicloud_slb_load_balancer.default.id
+  instance_type = "SlbInstance"                   # "EcsInstance", "SlbInstance", "Nat", "NetworkInterface", "HaVip"
 }
